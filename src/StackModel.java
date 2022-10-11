@@ -14,10 +14,11 @@ public class StackModel {
 
     //清空栈、调用expression
     public void _init(){
+        System.out.println("Initing...");
         getExpressoion();
     }
 
-    //获得用户输入
+    //获得用户输入(调用UIModel端代码)
     private void getExpressoion(){
 
     }
@@ -37,5 +38,8 @@ public class StackModel {
 
     }
 
+    //表达式运算主要逻辑
+    private int executeCal(){
 
+    }
 }
