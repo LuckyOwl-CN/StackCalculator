@@ -35,11 +35,9 @@ public class StackModel {
 
     //输入操作符optr及栈位置，输出优先级表中对应优先级
     private int priorityTable(char optr, StackPosition stackPosition){
-
     }
 
     //表达式运算主要逻辑
     private int executeCal(){
-
     }
 }
