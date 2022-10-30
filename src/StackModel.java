@@ -6,10 +6,12 @@ public class StackModel {
     private String expression = null;
     private String curr;
     private String legaloptr = "+-*/%^&()=";
-    private String legalopnd = "123456789.";
+    private String legalopnd = "1234567890.";
     private int curr_opnd;
     private char curr_optr;
     private int exp_positon = 0;
+    private boolean calError = false;
+    private String sublegaloptr = "+-*/%^&=";
 
     enum Priority {
         HIGH, EQUAL, LOW;
@@ -23,40 +25,90 @@ public class StackModel {
     public void _init() {
         System.out.println("Initing...");
         getExpressoion();
-        System.out.println(executeCal());
+        preProcess();
+        if(calError){
+            System.out.println("CalError!");
+        }
+        else {
+            double answer = executeCal();
+            if(answer == 0 && calError){
+                System.out.println("CalError!");
+            }
+            else System.out.println(answer);
+        }
+    }
+
+    private void preProcess(){
+        this.expression = this.expression.replace(" ","");
+        int num = 0;
+        for (int i = 0; i < expression.length(); i++) {
+            if(!legaloptr.contains(expression.substring(i,i+1)) &&
+                    !legalopnd.contains(expression.substring(i,i+1))){
+                calError = true;
+                return;
+            }
+            if(expression.charAt(i) == '('){
+                num++;
+            }
+            else if(expression.charAt(i) == ')'){
+                num--;
+            }
+            if(num < 0){
+                calError = true;
+                return;
+            }
+            if(i != 0 && i+1 < expression.length()){
+                if(sublegaloptr.contains(expression.substring(i-1,i)) &&
+                        expression.charAt(i) == '-' && !legalopnd.contains(expression.substring(i+1,i+2))){
+                    calError = false;
+                    continue;
+                }
+            }
+            else if(i != 0 && i < expression.length()){
+                if(sublegaloptr.contains(expression.substring(i-1,i)) &&
+                        sublegaloptr.contains(expression.substring(i,i+1))){
+                    calError = true;
+                    return;
+                }
+            }
+        }
+        if(num > 0){
+            calError = true;
+            return;
+        }
+        System.out.println(expression);
     }
 
     //获得用户输入(调用UIModel端代码)
     private void getExpressoion() {
-        this.expression = "5 + (7+ 1) +(2+ (2+1))= ";
+        this.expression = "5 + ( 7 - 9) / (3 - (2 *2)) * (4^2)=";
     }
 
     //获取字符或字符串
     private String getCurr(int curr) {
         String currstring = "";
-        while (expression.charAt(curr) == ' '){
-            if(curr < expression.length()){
-                curr++;
-            }
-            if(curr == expression.length()){
-                exp_positon = curr;
-                return currstring;
+        if(curr != 0 && curr+1 < expression.length() &&
+                expression.charAt(curr) == '-' &&
+                legalopnd.contains(expression.substring(curr+1,curr+2)) &&
+                !legalopnd.contains(expression.substring(curr-1,curr))||
+                legalopnd.contains(expression.substring(curr,curr+1))) {
+            currstring += expression.substring(curr,curr+1);
+            curr++;
+            for (; curr < expression.length(); curr++) {
+                if(legalopnd.contains(expression.substring(curr,curr+1))){
+                    currstring += expression.substring(curr,curr+1);
+                }
+                else {
+                    exp_positon = curr;
+                    return currstring;
+                }
             }
         }
-        if(legaloptr.contains(expression.substring(curr,curr+1))){
+        else {
             currstring += expression.substring(curr,curr+1);
             exp_positon = curr + 1;
             return currstring;
         }
-        for (; curr < expression.length(); curr++) {
-            if(legalopnd.contains(expression.substring(curr,curr+1))){
-                currstring += expression.substring(curr,curr+1);
-            }
-            else {
-                break;
-            }
-        }
-        exp_positon = curr;
         return currstring;
     }
 
@@ -169,7 +221,13 @@ public class StackModel {
                             double opnd1 = opnd.pop();
                             double opnd2 = opnd.pop();
                             char optr_cul = optr.pop();
-                            answer = opnd1 + opnd2;
+                            if(opnd1 == 0){
+                                calError = true;
+                                return 0;
+                            }
+                            CalModel calModel = new CalModel(opnd2,opnd1);
+                            answer = calModel.CalSelect(optr_cul);
+                            //answer = opnd1 + opnd2;
                             opnd.push(answer);
                             if(optr.isEmpty()){
                                 optr.push(stackout);
