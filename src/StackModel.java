@@ -42,36 +42,52 @@ public class StackModel {
         this.expression = this.expression.replace(" ","");
         int num = 0;
         for (int i = 0; i < expression.length(); i++) {
+            //判断是否为非法字符
             if(!legaloptr.contains(expression.substring(i,i+1)) &&
                     !legalopnd.contains(expression.substring(i,i+1))){
                 calError = true;
                 return;
             }
+            //判断括号的合法性
             if(expression.charAt(i) == '('){
                 num++;
             }
             else if(expression.charAt(i) == ')'){
                 num--;
             }
+            //括号的顺序不对
             if(num < 0){
                 calError = true;
                 return;
             }
             if(i != 0 && i+1 < expression.length()){
                 if(sublegaloptr.contains(expression.substring(i-1,i)) &&
-                        expression.charAt(i) == '-' && !legalopnd.contains(expression.substring(i+1,i+2))){
-                    calError = false;
+                        expression.charAt(i) == '-' && legalopnd.contains(expression.substring(i+1,i+2))){
                     continue;
                 }
             }
-            else if(i != 0 && i < expression.length()){
+            if(i != 0 && i < expression.length()){
                 if(sublegaloptr.contains(expression.substring(i-1,i)) &&
                         sublegaloptr.contains(expression.substring(i,i+1))){
                     calError = true;
                     return;
                 }
             }
+            //数字与括号间无其他运算符报错
+            if(i != 0 && i < expression.length()){
+                if(legalopnd.contains(expression.substring(i-1,i)) &&
+                expression.charAt(i) == '(') {
+                    calError = true;
+                    return;
+                }
+                else if(expression.charAt(i-1) == ')' &&
+                legalopnd.contains(expression.substring(i,i+1))){
+                    calError = true;
+                    return;
+                }
+            }
         }
+        //括号最终没有抵消
         if(num > 0){
             calError = true;
             return;
