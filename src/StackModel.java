@@ -43,7 +43,7 @@ public class StackModel {
         int num = 0;
         for (int i = 0; i < expression.length(); i++) {
             if(!legaloptr.contains(expression.substring(i,i+1)) &&
-            !legalopnd.contains(expression.substring(i,i+1))){
+                    !legalopnd.contains(expression.substring(i,i+1))){
                 calError = true;
                 return;
             }
@@ -59,14 +59,14 @@ public class StackModel {
             }
             if(i != 0 && i+1 < expression.length()){
                 if(sublegaloptr.contains(expression.substring(i-1,i)) &&
-                expression.charAt(i) == '-' && !legalopnd.contains(expression.substring(i+1,i+2))){
+                        expression.charAt(i) == '-' && !legalopnd.contains(expression.substring(i+1,i+2))){
                     calError = false;
                     continue;
                 }
             }
             else if(i != 0 && i < expression.length()){
                 if(sublegaloptr.contains(expression.substring(i-1,i)) &&
-                sublegaloptr.contains(expression.substring(i,i+1))){
+                        sublegaloptr.contains(expression.substring(i,i+1))){
                     calError = true;
                     return;
                 }
@@ -88,10 +88,10 @@ public class StackModel {
     private String getCurr(int curr) {
         String currstring = "";
         if(curr != 0 && curr+1 < expression.length() &&
-        expression.charAt(curr) == '-' &&
-        legalopnd.contains(expression.substring(curr+1,curr+2)) &&
+                expression.charAt(curr) == '-' &&
+                legalopnd.contains(expression.substring(curr+1,curr+2)) &&
                 !legalopnd.contains(expression.substring(curr-1,curr))||
-        legalopnd.contains(expression.substring(curr,curr+1))) {
+                legalopnd.contains(expression.substring(curr,curr+1))) {
             currstring += expression.substring(curr,curr+1);
             curr++;
             for (; curr < expression.length(); curr++) {

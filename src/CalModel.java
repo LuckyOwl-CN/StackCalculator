@@ -1,48 +1,49 @@
 public class CalModel {
-    private int cal_answer = 0;
-    private int opnd1;
-    private int opnd2;
+    private double cal_answer = 0;
+    private double opnd1;
+    private double opnd2;
 
-    public void getOpnd(int opnd1,int opnd2){
+    CalModel (double opnd1, double opnd2) {
         this.opnd1 = opnd1;
         this.opnd2 = opnd2;
     }
 
-    //使用switch匹配操作符
-    public void CalSelect(char optr){
 
+
+    /**
+     * 操作符判断并给出结果
+     * @param optr
+     * @return
+     */
+    public double CalSelect(char optr){
+        switch(optr) {
+            case '+':
+                this.cal_answer = this.opnd1 + this.opnd2;
+                break;
+            case '-':
+                this.cal_answer = this.opnd1 - this.opnd2;
+                break;
+            case '*':
+                this.cal_answer = this.opnd1 * this.opnd2;
+                break;
+            case '/':
+                this.cal_answer = this.opnd1 / this.opnd2;
+                break;
+            case '%':
+                this.cal_answer = this.opnd1 % this.opnd2;
+                break;
+            case '&':
+                this.cal_answer = Math.sqrt(this.opnd1);
+                break;
+            case '=':
+                this.cal_answer = this.opnd1 == this.opnd2 ? 1 : 0;
+                break;
+            case '^':
+                this.cal_answer = Math.pow(this.opnd1, this.opnd2);
+                break;
+        }
+        // 改进精度问题，保留四位小数
+        return Math.round((this.cal_answer)*10000)/10000.0;
     }
 
-    //CalSelect需要调用的函数
-    private int operation_Add(){
-        return cal_answer;
-    }
-
-    private int operation_Sub(){
-        return cal_answer;
-    }
-
-    private int operation_Mul(){
-        return cal_answer;
-    }
-
-    private int operation_Div(){
-        return cal_answer;
-    }
-
-    private int operation_Mod(){
-        return cal_answer;
-    }
-
-    private int operation_Sqar(){
-        return cal_answer;
-    }
-
-    private int operation_Equal(){
-        return cal_answer;
-    }
-
-    private int operation_Exp(){
-        return cal_answer;
-    }
 }
