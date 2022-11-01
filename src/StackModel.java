@@ -24,6 +24,11 @@ public class StackModel {
     //清空栈、调用expression
     public void _init() {
         System.out.println("Initing...");
+        //清空初始化
+        calError = false;
+        exp_positon = 0;
+        cleanStack();
+
         getExpressoion();
         preProcess();
         if(calError){
@@ -36,6 +41,11 @@ public class StackModel {
             }
             else System.out.println(answer);
         }
+    }
+
+    private void cleanStack(){
+        while(!optr.isEmpty()) optr.pop();
+        while (!opnd.isEmpty()) opnd.pop();
     }
 
     private void preProcess(){
@@ -92,12 +102,18 @@ public class StackModel {
             calError = true;
             return;
         }
+        //最后的字符不为'='
+        if(expression.charAt(expression.length()-1) != '='){
+            calError = true;
+            return;
+        }
         System.out.println(expression);
     }
 
     //获得用户输入(调用UIModel端代码)
     private void getExpressoion() {
-        this.expression = "5 + ( 7 - 9) / (3 - (2 *2)) * (4^2)=";
+        //this.expression = "5 + ( 7 - 9) / (3 - (2 *2)) * (4^2)=";
+        this.expression = UIModel.getExpression();
     }
 
     //获取字符或字符串
@@ -107,7 +123,8 @@ public class StackModel {
                 expression.charAt(curr) == '-' &&
                 legalopnd.contains(expression.substring(curr+1,curr+2)) &&
                 !legalopnd.contains(expression.substring(curr-1,curr))||
-                legalopnd.contains(expression.substring(curr,curr+1))) {
+                legalopnd.contains(expression.substring(curr,curr+1)) ||
+                (curr == 0 && expression.charAt(curr) == '-')) {
             currstring += expression.substring(curr,curr+1);
             curr++;
             for (; curr < expression.length(); curr++) {
